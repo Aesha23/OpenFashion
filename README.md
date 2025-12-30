@@ -1,1 +1,1 @@
-open-fashion-lkjv.vercel.app 
+https://openfashion.vercel.app/
