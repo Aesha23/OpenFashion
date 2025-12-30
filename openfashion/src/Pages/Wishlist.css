@@ -1,0 +1,68 @@
+.page-container {
+  padding: 60px 6%;
+  background: linear-gradient(180deg, #fef8f8, #c8c4c4);
+  min-height: 100vh;
+}
+.empty-wishlist {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  font-size: 30px;
+  font-weight: 600;
+  color: #555;
+}
+
+.icons {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-cart-icon {
+  width: 35px !important;
+  height: 35px !important;
+  object-fit: contain;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.add-cart-icon:hover {
+  transform: scale(1.2);
+  opacity: 0.8;
+}
+
+.r-w {
+  width: 35px !important;
+  height: 35px !important;
+  object-fit: contain;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.r-w:hover {
+  transform: scale(1.2);
+  opacity: 0.8;
+}
+
+.product-wishlist {
+  /* background: #e8e8e8; */
+  background: #f8f8f8;
+  border-radius: 22px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, max-content));
+  justify-content: center;
+  gap: 35px;
+  margin-top: 40px;
+}

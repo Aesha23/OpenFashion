@@ -1,0 +1,27 @@
+.wishlist-wrapper {
+  position: relative;
+}
+
+.wishlist-heart {
+  font-size: 25px;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+  color: #333;
+}
+
+.wishlist-heart:hover {
+  transform: scale(1.15);
+}
+
+.wishlist-toast {
+  position: absolute;
+  top: -38px;
+  right: 0;
+  background: black;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  white-space: nowrap;
+  animation: fadeUp 0.3s ease;
+}

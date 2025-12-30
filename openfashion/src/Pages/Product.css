@@ -1,0 +1,174 @@
+.page-container {
+  padding: 60px 6%;
+  background: linear-gradient(180deg, #fef8f8, #c8c4c4);
+  min-height: 100vh;
+}
+.single-product {
+  max-width: 1000px;
+  margin: 60px auto;
+  padding: 20px;
+  display: flex;
+  gap: 60px;
+  align-items: center;
+}
+
+.product-left img {
+  width: 420px;
+  border-radius: 20px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.product-right {
+  flex-direction: column;
+}
+
+.product-right h1 {
+  font-size: 36px;
+  margin-bottom: 15px;
+  letter-spacing: 2px;
+}
+
+.description {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 25px;
+  line-height: 1.6;
+}
+
+.price {
+  letter-spacing: 2px;
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.product-right button {
+  width: 220px;
+  height: 50px;
+  border: none;
+  border-radius: 30px;
+  background: black;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.product-right button:hover {
+  background: #5f5858;
+  transform: translateY(-2px);
+}
+
+.price-row {
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.price-wishlist {
+  display: flex;
+  margin-top: 22px;
+  gap: 100px;
+}
+
+.price {
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0;
+}
+.ratings {
+  justify-content: left;
+  display: flex;
+  gap: 6px;
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+.stars {
+  letter-spacing: 1px;
+}
+
+.rating-value {
+  justify-content: center;
+  font-weight: 500;
+  color: #222;
+}
+
+.review-count {
+  justify-content: center;
+  color: #777;
+  font-size: 13px;
+}
+
+@media (max-width: 1024px) {
+  .single-product {
+    gap: 40px;
+    padding: 20px;
+  }
+
+  .product-left img {
+    width: 360px;
+  }
+
+  .product-right h1 {
+    font-size: 30px;
+  }
+
+  .description {
+    font-size: 16px;
+  }
+
+  .price {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .single-product {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+    margin: 40px auto;
+  }
+
+  .product-left img {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .product-right {
+    align-items: center;
+  }
+
+  .price-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .product-right button {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    padding: 40px 4%;
+  }
+
+  .product-right h1 {
+    font-size: 24px;
+  }
+
+  .description {
+    font-size: 15px;
+  }
+
+  .price {
+    font-size: 22px;
+  }
+
+  .product-right button {
+    height: 45px;
+    font-size: 15px;
+  }
+}
