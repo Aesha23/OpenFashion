@@ -7,10 +7,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 300px;
+  min-height: 85vh;
   font-size: 30px;
   font-weight: 600;
   color: #555;
+  background: linear-gradient(180deg, #fef8f8, #c8c4c4);
 }
 
 .icons {
@@ -65,4 +66,16 @@
   justify-content: center;
   gap: 35px;
   margin-top: 40px;
+}
+
+@media (max-width: 480px) {
+  .page-container h2 {
+    font-size: 22px;
+  }
+  .product-wishlist {
+    padding: 12px;
+  }
+  .empty-wishlist {
+    font-size: 25px;
+  }
 }

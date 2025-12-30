@@ -81,3 +81,21 @@
 .auth-footer a:hover {
   text-decoration: underline;
 }
+
+@media (max-width: 480px) {
+  .auth-box {
+    width: 330px;
+  }
+  .auth-box h2 {
+    font-size: 22px;
+  }
+  .auth-box input {
+    font-size: 12px;
+  }
+  .auth-box button {
+    font-size: 14px;
+  }
+  .auth-footer {
+    font-size: 12px;
+  }
+}

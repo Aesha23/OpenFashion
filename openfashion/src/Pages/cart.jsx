@@ -64,16 +64,7 @@ export default function Cart() {
 
   return (
     <div className="page-container">
-      <h2
-        style={{
-          textAlign: "center",
-          fontSize: "32px",
-          marginTop: "20px",
-          letterSpacing: "2px",
-        }}
-      >
-        CART🛒
-      </h2>
+      <h2>CART🛒</h2>
       <div className="cart-page">
         {message && (
           <div
