@@ -49,7 +49,14 @@ export const login = async (
     return false;
   }
 
-  localStorage.setItem(SESSION_KEY, JSON.stringify({ email: user.email }));
+  localStorage.setItem(
+    SESSION_KEY,
+    JSON.stringify({
+      email: user.email,
+      name: user.name,
+      address: user.address || "",
+    })
+  );
 
   window.dispatchEvent(new Event(AUTH_EVENT));
   return true;

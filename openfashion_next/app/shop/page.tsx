@@ -10,7 +10,7 @@ import { toggleWishlist } from "../utils/wishlist";
 const products = [
   {
     id: 1,
-    name: "CROP SWEATER",
+    name: "STYLISH HAT",
     price: "950.00",
     img: "/New1.png",
   },
@@ -34,7 +34,7 @@ const products = [
   },
   {
     id: 5,
-    name: "CROP TOP",
+    name: "WHITE T-SHIRT",
     price: "800.00",
     img: "/New5.png",
   },

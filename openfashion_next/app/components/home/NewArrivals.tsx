@@ -1,5 +1,6 @@
 "use client";
 
+import { SESSION_KEY } from "@/app/utils/auth";
 import { addToCart } from "@/app/utils/cart";
 import { protectedNavigate } from "@/app/utils/protectedNavigate";
 import { toggleWishlist } from "@/app/utils/wishlist";
@@ -18,7 +19,7 @@ type Product = {
 const products: Product[] = [
   {
     id: 1,
-    name: "CROP SWEATER",
+    name: "STYLISH HAT",
     price: "950.00",
     img: "/New1.png",
   },
@@ -59,6 +60,16 @@ export default function NewArrivals() {
 
     toast.success("Added to cart 🛒");
   };
+
+  const handleProtectedView = () => {
+    if (!localStorage.getItem(SESSION_KEY)) {
+      toast.error("Login to View Products!");
+      router.push("/login");
+      return;
+    }
+    protectedNavigate(router, "/shop");
+  };
+
   const handleAddToWishlist = (product: any) => {
     const result = toggleWishlist({
       id: product.id,
@@ -80,10 +91,7 @@ export default function NewArrivals() {
       <div className="new-arrivals-container">
         <div className="new-arrivals-header">
           <h2>OUR NEW ARRIVALS</h2>
-          <span
-            onClick={() => protectedNavigate(router, "/shop")}
-            className="view-all"
-          >
+          <span onClick={handleProtectedView} className="view-all">
             VIEW ALL PRODUCTS
           </span>
         </div>

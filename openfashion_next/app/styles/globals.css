@@ -128,30 +128,30 @@ body {
   .page-container {
     padding: 40px 4%;
   }
-  
+
   .product-grid {
     gap: 24px;
   }
-  
+
   .product-wishlist {
     padding: 16px;
   }
-  
+
   .page-container h2 {
     font-size: 24px;
     margin-bottom: 40px;
   }
-  
+
   .icons {
     gap: 14px;
   }
-  
+
   .add-cart-icon,
   .r-w {
     width: 30px;
     height: 30px;
   }
-  
+
   .page-container,
   .new-arrivals-container,
   .collection-wrapper {
@@ -564,6 +564,34 @@ body {
   color: #777;
 }
 
+.address-box {
+  border: 1px solid #eee;
+  padding: 14px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.address-box h4 {
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 550;
+}
+
+.address-box p {
+  font-size: 14px;
+  color: #555;
+}
+
+.change-address {
+  margin-top: 8px;
+  background: none;
+  border: none;
+  color: #000;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 13px;
+}
+
 .cart-summary {
   border: 1px solid #eaeaea;
   padding: 35px;
@@ -658,11 +686,16 @@ body {
 .cart-toast.error {
   color: red;
 }
+
 @media (max-width: 768px) {
   .cart-layout {
     grid-template-columns: 1fr;
   }
+  .cart-title {
+    font-size: 25px;
+  }
 }
+
 
 /* Wishlist button */
 
@@ -1225,3 +1258,9 @@ body {
   font-weight: 600;
   color: #555;
 }
+
+@media (max-width: 768px) {
+  .profile-orders h2 {
+    font-size: 22px;
+  }
+  }

@@ -20,7 +20,17 @@ export default function CartPage() {
   const [total, setTotal] = useState(0);
   const [message, setMessage] = useState("");
   const [isPaying, setIsPaying] = useState(false);
-  const [confirmId, setConfirmId] = useState<number | null>(null);
+  const [address, setAddress] = useState<string>("");
+  const [editingAddress, setEditingAddress] = useState(false);
+  const [tempAddress, setTempAddress] = useState(address);
+
+  useEffect(() => {
+    const sessionUser = JSON.parse(localStorage.getItem("sessionUser") || "{}");
+
+    if (sessionUser?.address) {
+      setAddress(sessionUser.address);
+    }
+  }, []);
 
   const router = useRouter();
 
@@ -48,6 +58,10 @@ export default function CartPage() {
     removeFromCart(id);
     setCart(getCart());
   };
+
+  useEffect(() => {
+    setTempAddress(address);
+  }, [address]);
 
   const handleQuantityChange = (id: number, delta: number) => {
     const updatedCart = cart.map((item) => {
@@ -93,6 +107,22 @@ export default function CartPage() {
         setMessage("");
         setIsPaying(false);
       }, 3000);
+    }
+  };
+
+  const handleAddressUpdate = (newAddress: string) => {
+    const session = JSON.parse(localStorage.getItem("sessionUser") || "{}");
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+
+    const index = users.findIndex((u: any) => u.email === session.email);
+    if (index !== -1) {
+      users[index].address = newAddress;
+      localStorage.setItem("users", JSON.stringify(users));
+
+      session.address = newAddress;
+      localStorage.setItem("sessionUser", JSON.stringify(session));
+
+      setAddress(newAddress);
     }
   };
 
@@ -158,15 +188,61 @@ export default function CartPage() {
 
           <div className="cart-summary">
             <h3>ORDER SUMMARY</h3>
+              
+                          {cart.map((item) => (
+                            <div key={`summary-${item.id}`} className="summary-row">
+                              <span>
+                                {item.name} . {item.quantity}
+                              </span>
+                              <span>₹{(item.price * item.quantity).toFixed(2)}</span>
+                            </div>
+                          ))}
+            <div className="address-box">
+              <h4>DELIVERY ADDRESS</h4>
 
-            {cart.map((item) => (
-              <div key={`summary-${item.id}`} className="summary-row">
-                <span>
-                  {item.name} . {item.quantity}
-                </span>
-                <span>₹{(item.price * item.quantity).toFixed(2)}</span>
-              </div>
-            ))}
+              {editingAddress ? (
+                <>
+                  <textarea
+                    value={tempAddress}
+                    onChange={(e) => setTempAddress(e.target.value)}
+                    rows={3}
+                    className="address-input"
+                  />
+
+                  <div className="address-actions">
+                    <button
+                      onClick={() => {
+                        handleAddressUpdate(tempAddress);
+                        setEditingAddress(false);
+                      }}
+                      className="save-btn"
+                    >
+                      Save
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setTempAddress(address);
+                        setEditingAddress(false);
+                      }}
+                      className="cancel-btn"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p>{address}</p>
+                  <button
+                    className="change-address"
+                    onClick={() => setEditingAddress(true)}
+                    >
+                    Change Address
+                  </button>
+                </>
+              )}
+            </div>
 
             <div className="divider" />
 

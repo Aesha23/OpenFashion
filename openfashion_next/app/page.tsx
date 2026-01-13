@@ -3,7 +3,6 @@ import CollectionSlider from "@/app/components/home/CollectionSlider";
 import WhyShop from "@/app/components/home/WhyShop";
 import NewArrivals from "@/app/components/home/NewArrivals";
 
-
 export default function HomePage() {
   return (
     <>
