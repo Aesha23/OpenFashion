@@ -128,30 +128,30 @@ body {
   .page-container {
     padding: 40px 4%;
   }
-
+  
   .product-grid {
     gap: 24px;
   }
-
+  
   .product-wishlist {
     padding: 16px;
   }
-
+  
   .page-container h2 {
     font-size: 24px;
     margin-bottom: 40px;
   }
-
+  
   .icons {
     gap: 14px;
   }
-
+  
   .add-cart-icon,
   .r-w {
     width: 30px;
     height: 30px;
   }
-
+  
   .page-container,
   .new-arrivals-container,
   .collection-wrapper {
@@ -460,10 +460,6 @@ body {
 @media (max-width: 480px) {
   .icon {
     font-size: 18px;
-  }
-
-  .logout-btn {
-    display: none;
   }
 
   .icon-wrapper {
