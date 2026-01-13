@@ -1,1 +1,1 @@
-https://openfashion.vercel.app/
+https://openfashionn.vercel.app/
