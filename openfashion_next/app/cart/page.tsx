@@ -20,6 +20,8 @@ export default function CartPage() {
   const [total, setTotal] = useState(0);
   const [message, setMessage] = useState("");
   const [isPaying, setIsPaying] = useState(false);
+  const [confirmId, setConfirmId] = useState<number | null>(null);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -60,40 +62,39 @@ export default function CartPage() {
     setCart(updatedCart);
   };
 
+  const handlePayment = () => {
+    if (isPaying) return;
+    setIsPaying(true);
 
-const handlePayment = () => {
-  if (isPaying) return;
-  setIsPaying(true);
+    const success = Math.random() > 0.3;
 
-  const success = Math.random() > 0.3;
+    if (success) {
+      setMessage("Payment Successful");
 
-  if (success) {
-    setMessage("Payment Successful");
+      const order = {
+        orderId: `ORD-${Date.now()}`,
+        date: new Date().toLocaleString(),
+        total: totalAfterDiscount,
+        items: cart,
+      };
 
-    const order = {
-      orderId: `ORD-${Date.now()}`,
-      date: new Date().toLocaleString(),
-      total: totalAfterDiscount,
-      items: cart,
-    };
+      saveOrder(order);
 
-    saveOrder(order);
+      setTimeout(() => {
+        clearCart();
+        setCart([]);
+        setMessage("");
+        setIsPaying(false);
+      }, 3000);
+    } else {
+      setMessage("Payment Failed. Try again.");
 
-    setTimeout(() => {
-      clearCart();
-      setCart([]);
-      setMessage("");
-      setIsPaying(false);
-    }, 3000);
-  } else {
-    setMessage("Payment Failed. Try again.");
-
-    setTimeout(() => {
-      setMessage("");
-      setIsPaying(false);
-    }, 3000);
-  }
-};
+      setTimeout(() => {
+        setMessage("");
+        setIsPaying(false);
+      }, 3000);
+    }
+  };
 
   const discount = total > 100 ? total * 0.1 : 0;
   const totalAfterDiscount = total - discount;

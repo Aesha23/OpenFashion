@@ -5,6 +5,7 @@ import { getWishlist, toggleWishlist } from "../utils/wishlist";
 import { addToCart } from "@/app/utils/cart";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
 import { IoHeartDislikeSharp } from "react-icons/io5";
+import toast from "react-hot-toast";
 
 type Product = {
   id: number;
@@ -27,11 +28,13 @@ export default function WishlistPage() {
     addToCart(item);
     toggleWishlist(item);
     setWishlist((prev) => prev.filter((p) => p.id !== item.id));
+    toast.success("Added to cart");
   };
 
   const handleRemove = (item: Product) => {
     toggleWishlist(item);
     setWishlist((prev) => prev.filter((p) => p.id !== item.id));
+    toast.error("Removed From Wishlist!");
   };
 
   if (!mounted) return null;

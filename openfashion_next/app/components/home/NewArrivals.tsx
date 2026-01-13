@@ -8,7 +8,14 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { FiHeart } from "react-icons/fi";
 
-const products = [
+type Product = {
+  id: number;
+  name: string;
+  price: string;
+  img: string;
+};
+
+const products: Product[] = [
   {
     id: 1,
     name: "CROP SWEATER",
@@ -37,7 +44,7 @@ const products = [
 
 export default function NewArrivals() {
   const router = useRouter();
-  const handleAddToCart = (product: any) => {
+  const handleAddToCart = (product: Product) => {
     const success = addToCart({
       id: product.id,
       name: product.name,
