@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { getCart, removeFromCart, clearCart, updateCart, getCartCount, CartItem } from "../utils/cart";
+import {
+  getCart,
+  removeFromCart,
+  clearCart,
+  CartItem,
+} from "../utils/cart";
 import { useRouter } from "next/navigation";
 import { saveOrder } from "../utils/orders";
 
@@ -42,7 +47,7 @@ export default function CartPage() {
     setTotal(sum);
   }, [cart]);
 
-  const handleRemove = (id: number) => {
+  const handleRemove = (id: string) => {
     removeFromCart(id);
     setCart(getCart());
   };
@@ -51,15 +56,15 @@ export default function CartPage() {
     setTempAddress(address);
   }, [address]);
 
-  const handleQuantityChange = (id: number, delta: number) => {
+  const handleQuantityChange = (id: string, delta: number) => {
     const updatedCart = cart.map((item) =>
       item.id === id
         ? { ...item, quantity: Math.max(1, item.quantity + delta) }
         : item,
     );
 
-    updateCart(updatedCart);
     setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
   const handlePayment = () => {
@@ -137,7 +142,6 @@ export default function CartPage() {
             {cart.map((item) => (
               <div key={`cart-${item.id}`} className="cart-item">
                 <div className="cart-img-wrapper">
-
                   <Image
                     src={item.img || "/placeholder.png"}
                     alt={item.name}

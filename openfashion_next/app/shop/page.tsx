@@ -7,48 +7,49 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { addToWishlist, isWishlisted } from "../utils/wishlist";
 import { useEffect, useState } from "react";
-import { getProducts, Product } from "../utils/products";
+
+type Product = {
+  _id: string;
+  name: string;
+  price: number;
+  img: string;
+};
 
 export default function ShopPage() {
   const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    setProducts(getProducts());
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then(setProducts)
+      .catch(() => toast.error("Failed to load products"));
   }, []);
 
   const handleAddToWishlist = (product: Product) => {
-    if (isWishlisted(product.id)) {
+    if (isWishlisted(product._id)) {
       toast.error("Already wishlisted ❤️");
       return;
     }
 
-    const res = addToWishlist({
-      id: product.id,
+    addToWishlist({
+      id: product._id,
       name: product.name,
       price: product.price,
       img: product.img,
     });
-
-    if (!res.success) {
-      toast.error(res.message || "Please login");
-      return;
-    }
-
     toast.success("Added to wishlist 🖤");
   };
 
   const handleAddToCart = (product: Product) => {
-    const success = addToCart({
-      id: product.id,
+    addToCart({
+      id: product._id,
       name: product.name,
       price: product.price,
       img: product.img,
     });
 
-    if (success) {
-      toast.success("Added to cart 🛒");
-    }
+    toast.success("Added to cart 🛒");
   };
 
   return (
@@ -60,7 +61,7 @@ export default function ShopPage() {
 
         <div className="new-arrivals-grid">
           {products.map((product) => (
-            <div className="arrival-card" key={product.id}>
+            <div className="arrival-card" key={product._id}>
               <div className="arrival-image">
                 <button
                   className="wishlist-btn"
@@ -76,8 +77,10 @@ export default function ShopPage() {
                   className="arrival-img"
                 />
               </div>
+
               <h3>{product.name}</h3>
               <span className="product-price">₹{product.price}</span>
+
               <button
                 className="add-cart-link"
                 onClick={() => handleAddToCart(product)}

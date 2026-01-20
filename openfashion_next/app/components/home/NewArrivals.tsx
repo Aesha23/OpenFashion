@@ -9,19 +9,44 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { FiHeart } from "react-icons/fi";
 import { useEffect, useState } from "react";
-import { getProducts, Product } from "@/app/utils/products";
+
+export interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  img: string;
+}
 
 export default function NewArrivals() {
   const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setProducts(getProducts());
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("/api/products", {
+          cache: "no-store",
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch products");
+
+        const data = await res.json();
+        setProducts(data);
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to load products");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
   const handleAddToCart = (product: Product) => {
     const success = addToCart({
-      id: product.id,
+      id: product._id,
       name: product.name,
       price: product.price,
       img: product.img,
@@ -45,13 +70,13 @@ export default function NewArrivals() {
   };
 
   const handleAddToWishlist = (product: Product) => {
-    if (isWishlisted(product.id)) {
+    if (isWishlisted(product._id)) {
       toast.error("Already wishlisted ❤️");
       return;
     }
 
     const result = addToWishlist({
-      id: product.id,
+      id: product._id,
       name: product.name,
       price: product.price,
       img: product.img,
@@ -66,6 +91,10 @@ export default function NewArrivals() {
     toast.success("Added to wishlist 🖤");
   };
 
+  if (loading) {
+    return <p style={{ textAlign: "center" }}>Loading products...</p>;
+  }
+
   return (
     <section className="new-arrivals">
       <div className="new-arrivals-container">
@@ -77,8 +106,8 @@ export default function NewArrivals() {
         </div>
 
         <div className="new-arrivals-grid">
-          {products.slice(0, 4).map((product) => (
-            <div className="arrival-card" key={product.id}>
+          {products.slice(8, 12).map((product) => (
+            <div className="arrival-card" key={product._id}>
               <div className="arrival-image">
                 <button
                   className="wishlist-btn"
@@ -86,17 +115,13 @@ export default function NewArrivals() {
                 >
                   <FiHeart
                     className={
-                      isWishlisted(product.id) ? "heart liked" : "heart"
+                      isWishlisted(product._id) ? "heart liked" : "heart"
                     }
                   />
                 </button>
 
                 <Image
-                  src={
-                    product.img.startsWith("/")
-                      ? product.img
-                      : "/placeholder.png"
-                  }
+                  src={product.img || "/placeholder.png"}
                   alt={product.name}
                   fill
                   className="arrival-img"

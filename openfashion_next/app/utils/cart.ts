@@ -1,11 +1,21 @@
 import toast from "react-hot-toast";
-import { Product } from "@/app/utils/products";
+import { SESSION_KEY } from "./auth";
 
-export const SESSION_KEY = "sessionUser";
 const LAST_USER_KEY = "lastUserEmail";
 
-export type CartItem = Product & {
+export type CartItem = {
+  id: string;
+  name: string;
+  price: number;
+  img: string;
   quantity: number;
+};
+
+type AddToCartInput = {
+  id: string;
+  name: string;
+  price: number;
+  img: string;
 };
 
 const getCurrentUserEmail = (): string | null => {
@@ -41,22 +51,13 @@ export const getCart = (): CartItem[] => {
   if (!key) return [];
 
   try {
-    const cart = JSON.parse(localStorage.getItem(key) || "[]");
-
-    return cart.map((item: any) => ({
-      ...item,
-      img:
-        typeof item.img === "string" && item.img.startsWith("/")
-          ? item.img
-          : item.image || "/placeholder.png",
-      quantity: Number(item.quantity) || 1,
-    }));
+    return JSON.parse(localStorage.getItem(key) || "[]");
   } catch {
     return [];
   }
 };
 
-export const addToCart = (product: Product): boolean => {
+export const addToCart = (product: AddToCartInput): boolean => {
   if (typeof window === "undefined") return false;
 
   const key = getCartKey();
@@ -79,9 +80,7 @@ export const addToCart = (product: Product): boolean => {
   return true;
 };
 
-export const removeFromCart = (id: number): void => {
-  if (typeof window === "undefined") return;
-
+export const removeFromCart = (id: string): void => {
   const key = getCartKey();
   if (!key) return;
 
@@ -91,8 +90,6 @@ export const removeFromCart = (id: number): void => {
 };
 
 export const clearCart = (): void => {
-  if (typeof window === "undefined") return;
-
   const key = getCartKey();
   if (!key) return;
 
@@ -101,8 +98,6 @@ export const clearCart = (): void => {
 };
 
 export const updateCart = (updatedCart: CartItem[]): void => {
-  if (typeof window === "undefined") return;
-
   const key = getCartKey();
   if (!key) return;
 

@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { addToWishlist, isWishlisted } from "@/app/utils/wishlist";
 
 type Product = {
-  id: number;
+  id: string;
   name: string;
   price: number;
   img: string;

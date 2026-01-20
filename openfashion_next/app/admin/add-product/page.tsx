@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { addProduct } from "@/app/utils/products";
 import toast from "react-hot-toast";
 
 export default function AddProductPage() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [img, setImg] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!name || !price || !img) {
@@ -22,18 +22,33 @@ export default function AddProductPage() {
       return;
     }
 
-    addProduct({
-      id: Date.now(),
-      name: name.trim(),
-      price: Number(price),
-      img: img.trim(),
-    });
+    try {
+      setLoading(true);
 
-    toast.success("Product added successfully ✅");
+      const res = await fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          price: Number(price),
+          img: img.trim(),
+        }),
+      });
 
-    setName("");
-    setPrice("");
-    setImg("");
+      if (!res.ok) {
+        throw new Error("Failed to add product");
+      }
+
+      toast.success("Product added successfully ✅");
+
+      setName("");
+      setPrice("");
+      setImg("");
+    } catch (err) {
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -61,7 +76,9 @@ export default function AddProductPage() {
           onChange={(e) => setImg(e.target.value)}
         />
 
-        <button type="submit">Add Product</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Adding..." : "Add Product"}
+        </button>
       </form>
     </div>
   );

@@ -1,31 +1,39 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getWishlist, removeFromWishlist } from "../utils/wishlist";
+import {
+  getWishlist,
+  removeFromWishlist,
+  WishlistProduct,
+} from "../utils/wishlist";
 import { addToCart } from "@/app/utils/cart";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
 import { IoHeartDislikeSharp } from "react-icons/io5";
 import toast from "react-hot-toast";
-import { Product } from "../utils/products";
 
 export default function WishlistPage() {
   const [mounted, setMounted] = useState(false);
-
-  const [wishlist, setWishlist] = useState<Product[]>([]);
+  const [wishlist, setWishlist] = useState<WishlistProduct[]>([]);
 
   useEffect(() => {
     setMounted(true);
     setWishlist(getWishlist());
   }, []);
 
-  const handleAddToCart = (product: Product) => {
-    addToCart(product);
+  const handleAddToCart = (product: WishlistProduct) => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      img: product.img,
+    });
+
     removeFromWishlist(product.id);
     setWishlist((prev) => prev.filter((p) => p.id !== product.id));
     toast.success("Added to cart");
   };
 
-  const handleRemove = (product: Product) => {
+  const handleRemove = (product: WishlistProduct) => {
     removeFromWishlist(product.id);
     setWishlist((prev) => prev.filter((p) => p.id !== product.id));
     toast.error("Removed From Wishlist!");

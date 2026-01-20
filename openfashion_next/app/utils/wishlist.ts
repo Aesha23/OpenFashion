@@ -1,7 +1,7 @@
 import { isLoggedIn, SESSION_KEY } from "./auth";
 
 export type WishlistProduct = {
-  id: number;
+  id: string; 
   name: string;
   price: number;
   img: string;
@@ -35,8 +35,17 @@ export const getWishlist = (): WishlistProduct[] => {
   return JSON.parse(localStorage.getItem(key) || "[]");
 };
 
-export const isWishlisted = (id: number): boolean => {
-  return getWishlist().some((item) => item.id === id);
+export const isWishlisted = (id: string): boolean => {
+  if (typeof window === "undefined") return false;
+
+  const key = getWishlistKey();
+  if (!key) return false;
+
+  const wishlist: WishlistProduct[] = JSON.parse(
+    localStorage.getItem(key) || "[]",
+  );
+
+  return wishlist.some((item) => item.id === id);
 };
 
 export const addToWishlist = (
@@ -63,7 +72,7 @@ export const addToWishlist = (
   return { success: true };
 };
 
-export const removeFromWishlist = (id: number): void => {
+export const removeFromWishlist = (id: string): void => {
   const key = getWishlistKey();
   if (!key) return;
 

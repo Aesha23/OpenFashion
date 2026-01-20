@@ -1,4 +1,4 @@
-import { SESSION_KEY } from "./cart";
+import { SESSION_KEY } from "./auth";
 
 export const getUserEmail = (): string | null => {
   const session = localStorage.getItem(SESSION_KEY);
