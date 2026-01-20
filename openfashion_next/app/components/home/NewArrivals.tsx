@@ -3,54 +3,28 @@
 import { SESSION_KEY } from "@/app/utils/auth";
 import { addToCart } from "@/app/utils/cart";
 import { protectedNavigate } from "@/app/utils/protectedNavigate";
-import { toggleWishlist } from "@/app/utils/wishlist";
+import { addToWishlist, isWishlisted } from "@/app/utils/wishlist";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { FiHeart } from "react-icons/fi";
-
-type Product = {
-  id: number;
-  name: string;
-  price: string;
-  img: string;
-};
-
-const products: Product[] = [
-  {
-    id: 1,
-    name: "STYLISH HAT",
-    price: "950.00",
-    img: "/New1.png",
-  },
-  {
-    id: 2,
-    name: "BAGGY JEANS",
-    price: "1055.00",
-    img: "/New2.png",
-  },
-  {
-    id: 3,
-    name: "WHITE T-SHIRT",
-    price: "650.00",
-    img: "/New3.png",
-  },
-  {
-    id: 4,
-    name: "CROP TOP",
-    price: "800.00",
-    img: "/New4.png",
-  },
-];
+import { useEffect, useState } from "react";
+import { getProducts, Product } from "@/app/utils/products";
 
 export default function NewArrivals() {
   const router = useRouter();
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    setProducts(getProducts());
+  }, []);
+
   const handleAddToCart = (product: Product) => {
     const success = addToCart({
       id: product.id,
       name: product.name,
-      price: Number(product.price.replace("$", "")),
-      image: product.img,
+      price: product.price,
+      img: product.img,
     });
 
     if (!success) {
@@ -70,22 +44,28 @@ export default function NewArrivals() {
     protectedNavigate(router, "/shop");
   };
 
-  const handleAddToWishlist = (product: any) => {
-    const result = toggleWishlist({
+  const handleAddToWishlist = (product: Product) => {
+    if (isWishlisted(product.id)) {
+      toast.error("Already wishlisted ❤️");
+      return;
+    }
+
+    const result = addToWishlist({
       id: product.id,
       name: product.name,
-      price: Number(product.price.replace("$", "")),
-      image: product.img,
+      price: product.price,
+      img: product.img,
     });
+
     if (!result.success) {
-      toast.error(result.message || "Something went wrong");
+      toast.error(result.message || "Please login");
       router.push("/login");
       return;
     }
 
-    toast.success("Added to wishlist");
-    window.dispatchEvent(new Event("wishlistUpdated", { bubbles: true }));
+    toast.success("Added to wishlist 🖤");
   };
+
   return (
     <section className="new-arrivals">
       <div className="new-arrivals-container">
@@ -97,18 +77,26 @@ export default function NewArrivals() {
         </div>
 
         <div className="new-arrivals-grid">
-          {products.map((product, index) => (
-            <div className="arrival-card" key={index}>
+          {products.slice(0, 4).map((product) => (
+            <div className="arrival-card" key={product.id}>
               <div className="arrival-image">
                 <button
                   className="wishlist-btn"
                   onClick={() => handleAddToWishlist(product)}
                 >
-                  <FiHeart />
+                  <FiHeart
+                    className={
+                      isWishlisted(product.id) ? "heart liked" : "heart"
+                    }
+                  />
                 </button>
 
                 <Image
-                  src={product.img}
+                  src={
+                    product.img.startsWith("/")
+                      ? product.img
+                      : "/placeholder.png"
+                  }
                   alt={product.name}
                   fill
                   className="arrival-img"

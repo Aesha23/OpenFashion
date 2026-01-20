@@ -76,6 +76,8 @@ export default function Navbar() {
           {cartQty > 0 && <span className="badge">{cartQty}</span>}
         </div>
 
+        
+
         {loggedIn && (
           <button className="logout-btn" onClick={handleLogout}>
             Logout

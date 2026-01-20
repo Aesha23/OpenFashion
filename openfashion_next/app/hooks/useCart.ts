@@ -1,36 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { getCart } from "../utils/cart";
+import { isLoggedIn } from "../utils/auth";
 
-const CART_UPDATED_EVENT = "cartUpdated";
-const STORAGE_EVENT = "storage";
+const subscribe = (callback: () => void) => {
+  window.addEventListener("cartUpdated", callback);
+  window.addEventListener("authChanged", callback);
 
-type CartItem = {
-  id: number;
-  quantity: number;
+  return () => {
+    window.removeEventListener("cartUpdated", callback);
+    window.removeEventListener("authChanged", callback);
+  };
+};
+
+const getSnapshot = () => {
+  if (!isLoggedIn()) return 0;
+
+  return getCart().length;
 };
 
 export const useCart = (): number => {
-  const [cartQty, setCartQty] = useState(0);
-
-  useEffect(() => {
-    const updateCartQty = () => {
-      const cart: CartItem[] = getCart();
-      const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
-      setCartQty(totalQty);
-    };
-
-    updateCartQty();
-
-    window.addEventListener(CART_UPDATED_EVENT, updateCartQty);
-    window.addEventListener(STORAGE_EVENT, updateCartQty);
-
-    return () => {
-      window.removeEventListener(CART_UPDATED_EVENT, updateCartQty);
-      window.removeEventListener(STORAGE_EVENT, updateCartQty);
-    };
-  }, []);
-
-  return cartQty;
+  return useSyncExternalStore(subscribe, getSnapshot, () => 0);
 };

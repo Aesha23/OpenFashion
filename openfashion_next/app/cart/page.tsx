@@ -29,24 +29,20 @@ export default function CartPage() {
 
     if (sessionUser?.address) {
       setAddress(sessionUser.address);
+      setTempAddress(sessionUser.address);
     }
   }, []);
 
   const router = useRouter();
 
   useEffect(() => {
-    const syncCart = () => {
-      setCart(getCart());
-    };
+    const syncCart = () => setCart(getCart());
 
     syncCart();
     setMounted(true);
 
     window.addEventListener("cartUpdated", syncCart);
-
-    return () => {
-      window.removeEventListener("cartUpdated", syncCart);
-    };
+    return () => window.removeEventListener("cartUpdated", syncCart);
   }, []);
 
   useEffect(() => {
@@ -64,13 +60,11 @@ export default function CartPage() {
   }, [address]);
 
   const handleQuantityChange = (id: number, delta: number) => {
-    const updatedCart = cart.map((item) => {
-      if (item.id === id) {
-        const newQty = item.quantity + delta;
-        return { ...item, quantity: newQty > 0 ? newQty : 1 };
-      }
-      return item;
-    });
+    const updatedCart = cart.map((item) =>
+      item.id === id
+        ? { ...item, quantity: Math.max(1, item.quantity + delta) }
+        : item,
+    );
 
     updateCart(updatedCart);
     setCart(updatedCart);
@@ -151,11 +145,12 @@ export default function CartPage() {
             {cart.map((item) => (
               <div key={`cart-${item.id}`} className="cart-item">
                 <div className="cart-img-wrapper">
+                  <p>{item.img}</p>
+
                   <Image
-                    src={item.image}
+                    src={item.image || "/placeholder.png"}
                     alt={item.name}
                     fill
-                    className="cart-img"
                   />
                 </div>
 
@@ -188,15 +183,14 @@ export default function CartPage() {
 
           <div className="cart-summary">
             <h3>ORDER SUMMARY</h3>
-              
-                          {cart.map((item) => (
-                            <div key={`summary-${item.id}`} className="summary-row">
-                              <span>
-                                {item.name} . {item.quantity}
-                              </span>
-                              <span>₹{(item.price * item.quantity).toFixed(2)}</span>
-                            </div>
-                          ))}
+            {cart.map((item) => (
+              <div key={`summary-${item.id}`} className="summary-row">
+                <span>
+                  {item.name} . {item.quantity}
+                </span>
+                <span>₹{(item.price * item.quantity).toFixed(2)}</span>
+              </div>
+            ))}
             <div className="address-box">
               <h4>DELIVERY ADDRESS</h4>
 
@@ -237,7 +231,7 @@ export default function CartPage() {
                   <button
                     className="change-address"
                     onClick={() => setEditingAddress(true)}
-                    >
+                  >
                     Change Address
                   </button>
                 </>

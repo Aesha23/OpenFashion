@@ -1,27 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { getWishlist } from "../utils/wishlist";
+import { isLoggedIn } from "../utils/auth";
+
+const subscribe = (callback: () => void) => {
+  window.addEventListener("wishlistUpdated", callback);
+  window.addEventListener("authChanged", callback);
+
+  return () => {
+    window.removeEventListener("wishlistUpdated", callback);
+    window.removeEventListener("authChanged", callback);
+  };
+};
+
+const getSnapshot = () => {
+  if (!isLoggedIn()) return 0;
+
+  return getWishlist().length;
+};
 
 export const useWishlist = (): number => {
-  const [wishlistCount, setWishlistCount] = useState(0);
-
-  useEffect(() => {
-    const updateWishlistCount = () => {
-      const count = getWishlist().length;
-      setWishlistCount(count);
-    };
-
-    updateWishlistCount();
-
-    window.addEventListener("wishlistUpdated", updateWishlistCount);
-    window.addEventListener("storage", updateWishlistCount);
-
-    return () => {
-      window.removeEventListener("wishlistUpdated", updateWishlistCount);
-      window.removeEventListener("storage", updateWishlistCount);
-    };
-  }, []);
-
-  return wishlistCount;
+  return useSyncExternalStore(subscribe, getSnapshot, () => 0);
 };

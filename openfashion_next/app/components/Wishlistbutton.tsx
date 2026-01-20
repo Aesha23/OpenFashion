@@ -3,49 +3,42 @@
 import { useEffect, useState } from "react";
 import { FiHeart } from "react-icons/fi";
 import toast from "react-hot-toast";
-import { isWishlisted, toggleWishlist } from "@/app/utils/wishlist";
+import { addToWishlist, isWishlisted } from "@/app/utils/wishlist";
 
 type Product = {
   id: number;
   name: string;
   price: number;
-  image: string;
+  img: string;
 };
 
 export default function WishlistButton({ product }: { product: Product }) {
-  const [liked, setLiked] = useState<boolean>(false);
+  const [liked, setLiked] = useState(false);
 
   useEffect(() => {
-    if (product?.id) {
-      setLiked(isWishlisted(product.id));
-    }
-  }, [product]);
+    setLiked(isWishlisted(product.id));
 
-  if (!product) return null;
+    const sync = () => setLiked(isWishlisted(product.id));
+    window.addEventListener("wishlistUpdated", sync);
 
-  const handleToggle = () => {
-    const result = toggleWishlist({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-    });
+    return () => window.removeEventListener("wishlistUpdated", sync);
+  }, [product.id]);
 
-    if (!result.success) {
-      toast.error(result.message || "Please login to use wishlist");
+  const handleClick = () => {
+    const res = addToWishlist(product);
+
+    if (!res.success) {
+      toast.error(res.message);
       return;
     }
 
-    const nowWishlisted = isWishlisted(product.id);
-    setLiked(nowWishlisted);
-    toast.success(nowWishlisted ? "Added to wishlist" : "Removed from wishlist");
+    setLiked(true);
+    toast.success("Added to wishlist 🖤");
   };
 
   return (
-    <div className="wishlist-wrapper">
-      <button className="wishlist-heart" onClick={handleToggle} aria-pressed={liked}>
-        <FiHeart style={{ color: liked ? "#c0392b" : undefined }} />
-      </button>
-    </div>
+    <button className="wishlist-heart" onClick={handleClick}>
+      <FiHeart className={liked ? "heart liked" : "heart"} />
+    </button>
   );
 }

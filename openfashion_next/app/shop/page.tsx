@@ -5,103 +5,40 @@ import { FiHeart } from "react-icons/fi";
 import { addToCart } from "../utils/cart";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { toggleWishlist } from "../utils/wishlist";
-
-const products = [
-  {
-    id: 1,
-    name: "STYLISH HAT",
-    price: "950.00",
-    img: "/New1.png",
-  },
-  {
-    id: 2,
-    name: "BAGGY JEANS",
-    price: "1055.00",
-    img: "/New2.png",
-  },
-  {
-    id: 3,
-    name: "WHITE T-SHIRT",
-    price: "650.00",
-    img: "/New3.png",
-  },
-  {
-    id: 4,
-    name: "CROP TOP",
-    price: "800.00",
-    img: "/New4.png",
-  },
-  {
-    id: 5,
-    name: "WHITE T-SHIRT",
-    price: "800.00",
-    img: "/New5.png",
-  },
-  {
-    id: 6,
-    name: "BLACK T-SHIRT",
-    price: "1155.00",
-    img: "/New6.png",
-  },
-  {
-    id: 7,
-    name: "HANDMADE SWEATER",
-    price: "1000.00",
-    img: "/New7.png",
-  },
-  {
-    id: 8,
-    name: "FLORAL ONEPIECE",
-    price: "950.00",
-    img: "/New8.png",
-  },
-  {
-    id: 9,
-    name: "OFF-WHITE SHIRT",
-    price: "500.00",
-    img: "/New9.png",
-  },
-  {
-    id: 10,
-    name: "BROWN T-SHIRT",
-    price: "450.00",
-    img: "/New10.png",
-  },
-  {
-    id: 11,
-    name: "SOFT LEATHER JACKETS",
-    price: "1500.00",
-    img: "/New11.png",
-  },
-  {
-    id: 12,
-    name: "MAXI DRESS",
-    price: "750.00",
-    img: "/New12.png",
-  },
-];
+import { addToWishlist, isWishlisted } from "../utils/wishlist";
+import { useEffect, useState } from "react";
+import { getProducts, Product } from "../utils/products";
 
 export default function ShopPage() {
-  const handleAddToWishlist = (product: any) => {
-    const result = toggleWishlist({
-      id: product.id,
-      name: product.name,
-      price: Number(product.price.replace("$", "")),
-      image: product.img,
-    });
-    if (!result.success) {
-      toast.error(result.message || "Something went wrong");
-      router.push("/login");
+  const router = useRouter();
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    setProducts(getProducts());
+  }, []);
+
+  const handleAddToWishlist = (product: Product) => {
+    if (isWishlisted(product.id)) {
+      toast.error("Already wishlisted ❤️");
       return;
     }
 
-    toast.success("Added to wishlist");
-    // Force event to ensure Navbar updates
-    window.dispatchEvent(new Event("wishlistUpdated", { bubbles: true }));
+    const res = addToWishlist({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      img: product.img,
+    });
+
+    if (!res.success) {
+      toast.error(res.message || "Please login");
+      return;
+    }
+
+    toast.success("Added to wishlist 🖤");
   };
-  const router = useRouter();
-  const handleAddToCart = (product: any) => {
+
+  const handleAddToCart = (product: Product) => {
     const success = addToCart({
       id: product.id,
       name: product.name,
@@ -122,8 +59,8 @@ export default function ShopPage() {
         </h2>
 
         <div className="new-arrivals-grid">
-          {products.map((product, index) => (
-            <div className="arrival-card" key={index}>
+          {products.map((product) => (
+            <div className="arrival-card" key={product.id}>
               <div className="arrival-image">
                 <button
                   className="wishlist-btn"
@@ -133,16 +70,14 @@ export default function ShopPage() {
                 </button>
 
                 <Image
-                  src={product.img}
+                  src={product.img || "/placeholder.png"}
                   alt={product.name}
                   fill
                   className="arrival-img"
                 />
               </div>
-
               <h3>{product.name}</h3>
               <span className="product-price">₹{product.price}</span>
-
               <button
                 className="add-cart-link"
                 onClick={() => handleAddToCart(product)}

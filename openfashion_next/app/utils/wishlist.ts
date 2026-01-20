@@ -1,68 +1,73 @@
-import { isLoggedIn } from "./auth";
+import { isLoggedIn, SESSION_KEY } from "./auth";
 
 export type WishlistProduct = {
   id: number;
   name: string;
   price: number;
-  image: string;
+  img: string;
 };
 
-const KEY = "wishlist";
+const getCurrentUserEmail = (): string | null => {
+  if (typeof window === "undefined") return null;
 
-const notifyWishlistUpdate = () => {
-  console.log("📢 Dispatching wishlistUpdated event");
-  const event = new Event("wishlistUpdated", { bubbles: true });
-  window.dispatchEvent(event);
-  console.log("✅ Event dispatched successfully");
+  const session = localStorage.getItem(SESSION_KEY);
+  if (!session) return null;
+
+  try {
+    const parsed = JSON.parse(session);
+    return parsed?.email || null;
+  } catch {
+    return null;
+  }
+};
+
+const getWishlistKey = (): string | null => {
+  const email = getCurrentUserEmail();
+  return email ? `wishlist_${email}` : null;
 };
 
 export const getWishlist = (): WishlistProduct[] => {
   if (typeof window === "undefined") return [];
 
-  try {
-    return JSON.parse(localStorage.getItem(KEY) || "[]");
-  } catch {
-    return [];
-  }
+  const key = getWishlistKey();
+  if (!key) return [];
+
+  return JSON.parse(localStorage.getItem(key) || "[]");
 };
 
 export const isWishlisted = (id: number): boolean => {
   return getWishlist().some((item) => item.id === id);
 };
 
-export const toggleWishlist = (
-  product: WishlistProduct
+export const addToWishlist = (
+  product: WishlistProduct,
 ): { success: boolean; message?: string } => {
-  console.log("❤️ toggleWishlist called with:", product);
-
   if (!isLoggedIn()) {
-    console.log("❌ Not logged in");
-    return {
-      success: false,
-      message: "Please login to use wishlist",
-    };
+    return { success: false, message: "Please login to use wishlist" };
   }
 
-  if (!product?.id) {
-    console.log("❌ No product ID");
-    return { success: false };
+  const key = getWishlistKey();
+  if (!key) {
+    return { success: false, message: "Please login to use wishlist" };
   }
 
-  let wishlist = getWishlist();
-  console.log("📦 Current wishlist:", wishlist);
+  const wishlist = getWishlist();
 
-  const exists = wishlist.find((item) => item.id === product.id);
-
-  if (exists) {
-    wishlist = wishlist.filter((item) => item.id !== product.id);
-    console.log("🗑️ Removed from wishlist");
-  } else {
-    wishlist.push(product);
-    console.log("✅ Added to wishlist");
+  if (wishlist.some((item) => item.id === product.id)) {
+    return { success: false, message: "Already wishlisted" };
   }
 
-  localStorage.setItem(KEY, JSON.stringify(wishlist));
-  console.log("💾 Saved to localStorage:", wishlist);
-  notifyWishlistUpdate();
+  localStorage.setItem(key, JSON.stringify([...wishlist, product]));
+  window.dispatchEvent(new Event("wishlistUpdated"));
+
   return { success: true };
+};
+
+export const removeFromWishlist = (id: number): void => {
+  const key = getWishlistKey();
+  if (!key) return;
+
+  const wishlist = getWishlist().filter((item) => item.id !== id);
+  localStorage.setItem(key, JSON.stringify(wishlist));
+  window.dispatchEvent(new Event("wishlistUpdated"));
 };

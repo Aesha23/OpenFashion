@@ -37,6 +37,19 @@ export default function Signup() {
       return;
     }
 
+    const trimmedName = name.trim();
+
+    if (trimmedName.length < 3) {
+      toast.error("Name must be at least 3 characters long");
+      return;
+    }
+
+    const namePattern = /^[a-zA-Z\s]+$/;
+    if (!namePattern.test(trimmedName)) {
+      toast.error("Name must contain only String and spaces");
+      return;
+    }
+
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
       toast.error("Email must be valid");
@@ -46,7 +59,7 @@ export default function Signup() {
     const passwordPattern = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
     if (!passwordPattern.test(password)) {
       toast.error(
-        "Password must be at least 6 characters long, include 1 uppercase letter and 1 number"
+        "Password must be at least 6 characters long, include 1 uppercase letter and 1 number",
       );
       return;
     }
@@ -60,31 +73,22 @@ export default function Signup() {
       <form className="auth-box" onSubmit={handleSubmit}>
         <h2>Signup</h2>
 
-        <input
-          name="name"
-          value={form.name}
-          placeholder="Name"
-          onChange={handleChange}
-        />
-        <input
-          name="email"
-          value={form.email}
-          placeholder="Email"
-          onChange={handleChange}
-        />
+        <label>Name:</label>
+        <input name="name" value={form.name} onChange={handleChange} />
+
+        <label>Email:</label>
+        <input name="email" value={form.email} onChange={handleChange} />
+
+        <label>Password:</label>
         <input
           name="password"
           type="password"
           value={form.password}
-          placeholder="Password"
           onChange={handleChange}
         />
-        <input
-          name="address"
-          value={form.address}
-          placeholder="Address"
-          onChange={handleChange}
-        />
+        
+        <label>Address:</label>
+        <input name="address" value={form.address} onChange={handleChange} />
 
         <button type="submit">Create Account</button>
 

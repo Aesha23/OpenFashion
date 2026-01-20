@@ -1,6 +1,7 @@
 import toast from "react-hot-toast";
 
 export const SESSION_KEY = "sessionUser";
+const LAST_USER_KEY = "lastUserEmail";
 
 export type CartItem = {
   id: number;
@@ -21,14 +22,17 @@ const getCurrentUserEmail = (): string | null => {
   if (typeof window === "undefined") return null;
 
   const session = localStorage.getItem(SESSION_KEY);
-  if (!session) return null;
-
-  try {
-    const parsed = JSON.parse(session);
-    return parsed?.email || null;
-  } catch {
-    return null;
+  if (session) {
+    try {
+      const parsed = JSON.parse(session);
+      if (parsed?.email) {
+        localStorage.setItem(LAST_USER_KEY, parsed.email);
+        return parsed.email;
+      }
+    } catch {}
   }
+
+  return localStorage.getItem(LAST_USER_KEY);
 };
 
 const getCartKey = (): string | null => {
@@ -46,7 +50,19 @@ export const getCart = (): CartItem[] => {
   const key = getCartKey();
   if (!key) return [];
 
-  return JSON.parse(localStorage.getItem(key) || "[]");
+  try {
+    const cart = JSON.parse(localStorage.getItem(key) || "[]");
+
+    return cart.map((item: any) => ({
+      ...item,
+      img:
+        typeof item.img === "string" && item.img.startsWith("/")
+          ? item.img
+          : "/placeholder.png",
+    }));
+  } catch {
+    return [];
+  }
 };
 
 export const addToCart = (product: Product): boolean => {
@@ -55,11 +71,10 @@ export const addToCart = (product: Product): boolean => {
   const key = getCartKey();
   if (!key) {
     toast.error("Please login to add items to cart");
-    notifyCartUpdate();
     return false;
   }
 
-  const cart: CartItem[] = getCart();
+  const cart = getCart();
   const existingItem = cart.find((item) => item.id === product.id);
 
   if (existingItem) {
@@ -105,5 +120,5 @@ export const updateCart = (updatedCart: CartItem[]): void => {
 };
 
 export const getCartCount = (): number => {
-  return getCart().reduce((total, item) => total + item.quantity, 0);
+  return getCart().length;
 };

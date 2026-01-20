@@ -1,18 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getWishlist, toggleWishlist } from "../utils/wishlist";
+import { getWishlist, removeFromWishlist } from "../utils/wishlist";
 import { addToCart } from "@/app/utils/cart";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
 import { IoHeartDislikeSharp } from "react-icons/io5";
 import toast from "react-hot-toast";
-
-type Product = {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-};
+import { Product } from "../utils/products";
 
 export default function WishlistPage() {
   const [mounted, setMounted] = useState(false);
@@ -24,16 +18,16 @@ export default function WishlistPage() {
     setWishlist(getWishlist());
   }, []);
 
-  const handleAddToCart = (item: Product) => {
-    addToCart(item);
-    toggleWishlist(item);
-    setWishlist((prev) => prev.filter((p) => p.id !== item.id));
+  const handleAddToCart = (product: Product) => {
+    addToCart(product);
+    removeFromWishlist(product.id);
+    setWishlist((prev) => prev.filter((p) => p.id !== product.id));
     toast.success("Added to cart");
   };
 
-  const handleRemove = (item: Product) => {
-    toggleWishlist(item);
-    setWishlist((prev) => prev.filter((p) => p.id !== item.id));
+  const handleRemove = (product: Product) => {
+    removeFromWishlist(product.id);
+    setWishlist((prev) => prev.filter((p) => p.id !== product.id));
     toast.error("Removed From Wishlist!");
   };
 
@@ -48,24 +42,24 @@ export default function WishlistPage() {
       <h2>MY FAVORITES 🖤</h2>
 
       <div className="product-grid">
-        {wishlist.map((item) => (
-          <div key={item.id} className="product-wishlist">
+        {wishlist.map((product) => (
+          <div key={product.id} className="product-wishlist">
             <div className="image-wrapper">
-              <img src={`/New${item.id}.png`} alt={item.name} />
+              <img src={product.img} alt={product.name} />
             </div>
 
-            <h3>{item.name}</h3>
-            <p>₹{item.price}</p>
+            <h3>{product.name}</h3>
+            <p>₹{product.price}</p>
 
             <div className="icons">
               <MdOutlineAddShoppingCart
                 className="add-cart-icon"
-                onClick={() => handleAddToCart(item)}
+                onClick={() => handleAddToCart(product)}
               />
 
               <IoHeartDislikeSharp
                 className="r-w"
-                onClick={() => handleRemove(item)}
+                onClick={() => handleRemove(product)}
               />
             </div>
           </div>

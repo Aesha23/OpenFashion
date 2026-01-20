@@ -29,11 +29,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={marcellus.variable}>
-      <body>
+      <body className="app-layout">
         <Navbar />
-
-        {children}
-        <Footer />
+        <main className="main-content">{children}</main>
+        <footer className="site-footer">
+          © 2026 OpenFashion. All rights reserved.
+        </footer>
         <Toaster
           position="top-center"
           toastOptions={{

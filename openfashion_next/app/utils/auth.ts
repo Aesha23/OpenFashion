@@ -16,7 +16,7 @@ export const signup = async (user: SignupForm): Promise<void> => {
   if (typeof window === "undefined") return;
 
   const users: SignupForm[] = JSON.parse(
-    localStorage.getItem(USER_KEY) || "[]"
+    localStorage.getItem(USER_KEY) || "[]",
   );
 
   const hashedPassword = await bcrypt.hash(user.password, 10);
@@ -30,12 +30,12 @@ export const signup = async (user: SignupForm): Promise<void> => {
 
 export const login = async (
   email: string,
-  password: string
+  password: string,
 ): Promise<boolean> => {
   if (typeof window === "undefined") return false;
 
   const users: SignupForm[] = JSON.parse(
-    localStorage.getItem(USER_KEY) || "[]"
+    localStorage.getItem(USER_KEY) || "[]",
   );
 
   const user = users.find((u) => u.email === email);
@@ -55,7 +55,7 @@ export const login = async (
       email: user.email,
       name: user.name,
       address: user.address || "",
-    })
+    }),
   );
 
   window.dispatchEvent(new Event(AUTH_EVENT));
@@ -71,15 +71,9 @@ export const logout = (): void => {
   if (typeof window === "undefined") return;
 
   try {
-    clearCart();
-
-    localStorage.removeItem("wishlist");
-
     localStorage.removeItem(SESSION_KEY);
 
     window.dispatchEvent(new Event(AUTH_EVENT));
-    window.dispatchEvent(new Event("cartUpdated"));
-    window.dispatchEvent(new Event("wishlistUpdated"));
   } catch (error) {
     console.error("Error During Logout:", error);
   }
