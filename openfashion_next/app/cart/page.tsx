@@ -2,17 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { getCart, removeFromCart, clearCart, updateCart } from "../utils/cart";
+import { getCart, removeFromCart, clearCart, updateCart, getCartCount, CartItem } from "../utils/cart";
 import { useRouter } from "next/navigation";
 import { saveOrder } from "../utils/orders";
-
-type CartItem = {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-};
 
 export default function CartPage() {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -145,10 +137,9 @@ export default function CartPage() {
             {cart.map((item) => (
               <div key={`cart-${item.id}`} className="cart-item">
                 <div className="cart-img-wrapper">
-                  <p>{item.img}</p>
 
                   <Image
-                    src={item.image || "/placeholder.png"}
+                    src={item.img || "/placeholder.png"}
                     alt={item.name}
                     fill
                   />

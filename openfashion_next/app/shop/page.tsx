@@ -43,7 +43,7 @@ export default function ShopPage() {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.img,
+      img: product.img,
     });
 
     if (success) {

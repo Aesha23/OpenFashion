@@ -28,7 +28,7 @@ export default function WishlistButton({ product }: { product: Product }) {
     const res = addToWishlist(product);
 
     if (!res.success) {
-      toast.error(res.message);
+      toast.error(res.message ?? "Something went wrong");
       return;
     }
 

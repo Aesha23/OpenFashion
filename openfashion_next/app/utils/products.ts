@@ -3,7 +3,6 @@ export type Product = {
   name: string;
   price: number;
   img: string;
-  description: string;
 };
 
 const PRODUCTS_KEY = "products";

@@ -1,21 +1,11 @@
 import toast from "react-hot-toast";
+import { Product } from "@/app/utils/products";
 
 export const SESSION_KEY = "sessionUser";
 const LAST_USER_KEY = "lastUserEmail";
 
-export type CartItem = {
-  id: number;
-  name: string;
-  price: number;
+export type CartItem = Product & {
   quantity: number;
-  image: string;
-};
-
-export type Product = {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
 };
 
 const getCurrentUserEmail = (): string | null => {
@@ -58,7 +48,8 @@ export const getCart = (): CartItem[] => {
       img:
         typeof item.img === "string" && item.img.startsWith("/")
           ? item.img
-          : "/placeholder.png",
+          : item.image || "/placeholder.png",
+      quantity: Number(item.quantity) || 1,
     }));
   } catch {
     return [];
