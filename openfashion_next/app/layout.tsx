@@ -2,7 +2,6 @@ import "./styles/globals.css";
 import Navbar from "./components/Navbar";
 import { Marcellus } from "next/font/google";
 import { Toaster } from "react-hot-toast";
-import Footer from "./components/Footer";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
